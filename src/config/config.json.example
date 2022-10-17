@@ -1,0 +1,10 @@
+{
+  "clientId": "",
+  "guildId": "",
+  "newsChannelId": "",
+  "officialPageBaseUrl": "https://ud.floor.line.games",
+  "officialPageNewsUrl": "https://ud.floor.line.games/us/bbs/notice/notice_us/1",
+
+  "enableInterval": true,
+  "pageFetchInterval": 600000
+}

@@ -1,0 +1,29 @@
+{
+  "name": "undecember_news",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": "16"
+  },
+  "scripts": {
+    "start": "pm2 start ./src/index.js --name UndecemberNews --max-memory-restart 150M --log ./logs/pm2.log --time",
+    "prod": "node ./src/index.js production",
+    "dev": "nodemon ./src/index.js development",
+    "cmd-update": "node src/deploys/deploy-commands.js",
+    "cmd-remove": "node src/deploys/clear-commands.js"
+  },
+  "author": "Agonys",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "4.1.2",
+    "cross-fetch": "^3.1.5",
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
+    "jsdom": "^20.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.25.0"
+  }
+}
