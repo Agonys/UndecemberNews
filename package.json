@@ -8,7 +8,7 @@
     "node": "16"
   },
   "scripts": {
-    "start": "pm2 start ./src/index.js --name UndecemberNews --max-memory-restart 150M --log ./logs/pm2.log --time",
+    "start": "pm2 start ./src/index.js --name UndecemberNews --max-memory-restart 250M --log ./logs/pm2.log --time",
     "prod": "node ./src/index.js production",
     "dev": "nodemon ./src/index.js development",
     "cmd-update": "node src/deploys/deploy-commands.js",

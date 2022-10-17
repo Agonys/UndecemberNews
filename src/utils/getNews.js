@@ -4,7 +4,7 @@ const { officialPageNewsUrl, officialPageBaseUrl } = require('../config/config.j
 
 const getNews = async () => {
 	const startTime = performance.now();
-	const response = await fetch(officialPageNewsUrl).then((res) => {
+	const response = await fetch(officialPageNewsUrl, { cache: 'no-store' }).then((res) => {
 		if (res.status >= 400) {
 			throw new Error('Bad response from server');
 		}
@@ -21,6 +21,7 @@ const getNews = async () => {
 			};
 		})
 		.reverse();
+
 	return {
 		executionTime: ((performance.now() - startTime) / 1000).toFixed(2),
 		list: newsList,
