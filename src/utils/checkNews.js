@@ -41,6 +41,7 @@ const checkNews = async (client, isExecutionForced = false) => {
 	const lastNewsIndex = client.news.findIndex(news => news.link === lastMessageLink);
 	const slicedNews = client.news.slice(lastNewsIndex + 1);
 	if (slicedNews.length) {
+		console.log(`[DEBUG]: lastNewsIndex: ${lastNewsIndex}\n`);
 		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link }));
 	}
 
