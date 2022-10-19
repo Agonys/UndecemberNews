@@ -3,6 +3,8 @@ const sendNews = require('./sendNews');
 const chalk = require('chalk');
 const { pageFetchInterval, newsChannelId } = require('../config/config.json');
 
+
+const linkRegex = new RegExp('https.+\\d+', 'g');
 const checkNews = async (client, isExecutionForced = false) => {
 	console.log(!isExecutionForced
 		? chalk.blue('Fetching news list...')
@@ -13,12 +15,19 @@ const checkNews = async (client, isExecutionForced = false) => {
 	console.log(chalk[!isExecutionForced ? 'blue' : 'yellow'](`Fetched news list in ${newsList.executionTime}s`));
 
 	const channel = await client.channels.fetch(newsChannelId);
-	const lastMessage = await channel.messages.fetch({ limit: 1 }).then(messages => {
-		const message = messages.first();
-		if (!message) return null;
+	const lastMessageLink = await channel.messages.fetch({ limit: 5 }).then(messages => {
+		const lastEmbedMessage = messages.find(message => message.embeds.length);
+		if (!lastEmbedMessage) return null;
 
-		return message.embeds[0].title;
+		const link = lastEmbedMessage.embeds[0].description.match(linkRegex);
+		return link ? link[0] : null;
 	});
+
+	if (!lastMessageLink) {
+		console.error(chalk.red('Couldn\'t find link in last message.'));
+		return !isExecutionForced ? setTimeout(() => checkNews(client), pageFetchInterval) : null;
+	}
+
 	const roleId = await channel.guild.roles.fetch().then(data => {
 		const newsRole = data.find(({ name }) => name === 'News');
 		return newsRole?.id || null;
@@ -29,7 +38,7 @@ const checkNews = async (client, isExecutionForced = false) => {
 		return !isExecutionForced ? setTimeout(() => checkNews(client), pageFetchInterval) : null;
 	}
 
-	const lastNewsIndex = client.news.findIndex(news => news.title === lastMessage);
+	const lastNewsIndex = client.news.findIndex(news => news.link === lastMessageLink);
 	const slicedNews = client.news.slice(lastNewsIndex + 1);
 	if (slicedNews.length) {
 		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link }));
