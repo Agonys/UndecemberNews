@@ -41,7 +41,9 @@ const checkNews = async (client, isExecutionForced = false) => {
 	const lastNewsIndex = client.news.findIndex(news => news.link === lastMessageLink);
 	const slicedNews = client.news.slice(lastNewsIndex + 1);
 	if (slicedNews.length) {
-		console.log(`[DEBUG]: lastNewsIndex: ${lastNewsIndex}\n`);
+		console.log(chalk.magenta(`[DEBUG]: lastNewsIndex: ${lastNewsIndex}`));
+		console.log(chalk.magenta(`[DEBUG]: lastMessageLink: ${lastMessageLink}`));
+		console.log(chalk.magenta(`[DEBUG]: client.news: ${JSON.stringify(client.news, null, 2)}`));
 		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link }));
 	}
 
