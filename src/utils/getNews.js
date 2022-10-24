@@ -1,30 +1,37 @@
 const fetch = require('cross-fetch');
 const { JSDOM } = require('jsdom');
 const { officialPageNewsUrl, officialPageBaseUrl } = require('../config/config.json');
+const chalk = require('chalk');
 
+const titleRegex = /^[^\]]*.(.+)/;
 const getNews = async () => {
 	const startTime = performance.now();
 	const response = await fetch(officialPageNewsUrl, { cache: 'no-store' }).then((res) => {
 		if (res.status >= 400) {
-			throw new Error('Bad response from server');
+			console.log(chalk.red('[ERROR]: Bad response from server'));
+			throw new Error();
 		}
+
 		return res.text();
 	});
+
 	const { document } = new JSDOM(response).window;
-	const newsList = [...document.querySelectorAll('.board-list:not(.noti-fixed)')[0].children]
-		.filter(node => node.tagName === 'LI')
+	global.currentDocument = document.querySelector('.board-list.noti-fixed');
+	const list = [...document.querySelectorAll('.board-list.noti-fixed li')]
 		.map(news => {
 			const link = news.querySelector('a');
+			const title = link.children[0].textContent.trim().match(titleRegex)[1];
 			return {
 				link: officialPageBaseUrl + link.href,
-				title: link.children[0].textContent.trim(),
+				title: title || 'Unknown title, notify administrator',
 			};
 		})
 		.reverse();
 
+
 	return {
 		executionTime: ((performance.now() - startTime) / 1000).toFixed(2),
-		list: newsList,
+		list,
 	};
 };
 
