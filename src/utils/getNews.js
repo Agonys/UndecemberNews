@@ -16,6 +16,7 @@ const getNews = async () => {
 	});
 
 	const { document } = new JSDOM(response).window;
+	global.currentDocument = document.querySelector('.board-list.noti-fixed');
 	const list = [...document.querySelectorAll('.board-list.noti-fixed li')]
 		.map(news => {
 			const link = news.querySelector('a');

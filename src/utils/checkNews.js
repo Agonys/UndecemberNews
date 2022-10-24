@@ -2,7 +2,8 @@ const getNews = require('./getNews');
 const sendNews = require('./sendNews');
 const chalk = require('chalk');
 const { pageFetchInterval, newsChannelId } = require('../config/config.json');
-
+const { writeSync, openSync } = require('fs');
+const path = require('path');
 
 const linkRegex = new RegExp('https.+\\d+', 'g');
 const checkNews = async (client, isExecutionForced = false) => {
@@ -41,9 +42,17 @@ const checkNews = async (client, isExecutionForced = false) => {
 	const lastNewsIndex = client.news.findIndex(news => news.link === lastMessageLink);
 	const slicedNews = client.news.slice(lastNewsIndex + 1);
 	if (slicedNews.length) {
-		console.log(chalk.magenta(`[DEBUG]: lastNewsIndex: ${lastNewsIndex}`));
+		const writeDate = new Date().toISOString().replaceAll(':', '-');
+		const { currentDocument } = global;
+		if (currentDocument) {
+			const fd = openSync(path.join(__dirname, `../../logs/htmlStructure/${writeDate}.html`), 'w');
+			writeSync(fd, currentDocument.outerHTML);
+		}
+
+		console.log(chalk.magenta(`[DEBUG]: lastNewsIndex: ${lastNewsIndex} (+1)`));
 		console.log(chalk.magenta(`[DEBUG]: lastMessageLink: ${lastMessageLink}`));
 		console.log(chalk.magenta(`[DEBUG]: client.news: ${JSON.stringify(client.news, null, 2)}`));
+		console.log(chalk.magenta(`[DEBUG]: slicedNews: ${JSON.stringify(slicedNews, null, 2)}`));
 		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link }));
 	}
 
