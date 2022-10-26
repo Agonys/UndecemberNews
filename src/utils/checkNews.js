@@ -12,6 +12,11 @@ const checkNews = async (client, isExecutionForced = false) => {
 		: chalk.yellow('Forcefully checking news list...'),
 	);
 	const newsList = await getNews();
+
+	if (!newsList.list.length) {
+		return !isExecutionForced ? setTimeout(() => checkNews(client), pageFetchInterval) : null;
+	}
+
 	client.news = newsList.list;
 	console.log(chalk[!isExecutionForced ? 'blue' : 'yellow'](`Fetched news list in ${newsList.executionTime}s`));
 

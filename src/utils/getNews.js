@@ -9,11 +9,21 @@ const getNews = async () => {
 	const response = await fetch(officialPageNewsUrl, { cache: 'no-store' }).then((res) => {
 		if (res.status >= 400) {
 			console.log(chalk.red('[ERROR]: Bad response from server'));
-			throw new Error();
+			return null;
 		}
 
 		return res.text();
+	}).catch(error => {
+		console.log(chalk.red(error));
+		return null;
 	});
+
+	if (!response) {
+		return {
+			executionTime: ((performance.now() - startTime) / 1000).toFixed(2),
+			list: [],
+		};
+	}
 
 	const { document } = new JSDOM(response).window;
 	global.currentDocument = document.querySelector('.board-list.noti-fixed');
