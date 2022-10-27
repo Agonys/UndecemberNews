@@ -58,7 +58,7 @@ const checkNews = async (client, isExecutionForced = false) => {
 		console.log(chalk.magenta(`[DEBUG]: lastMessageLink: ${lastMessageLink}`));
 		console.log(chalk.magenta(`[DEBUG]: client.news: ${JSON.stringify(client.news, null, 2)}`));
 		console.log(chalk.magenta(`[DEBUG]: slicedNews: ${JSON.stringify(slicedNews, null, 2)}`));
-		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link }));
+		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link, crosspost: true }));
 	}
 
 	return !isExecutionForced ? setTimeout(() => checkNews(client), pageFetchInterval) : null;
