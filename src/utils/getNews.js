@@ -6,26 +6,36 @@ const chalk = require('chalk');
 const titleRegex = /^[^\]]*.(.+)/;
 const getNews = async () => {
 	const startTime = performance.now();
-	const response = await fetch(officialPageNewsUrl, { cache: 'no-store' }).then((res) => {
+	const response = await fetch(`${officialPageNewsUrl}?dummy=${Date.now()}`, {
+		cache: 'no-cache',
+		headers: {
+			'Cache-Control': 'no-cache',
+		},
+	}).then(async (res) => {
 		if (res.status >= 400) {
 			console.log(chalk.red('[ERROR]: Bad response from server'));
 			return null;
 		}
 
-		return res.text();
+		return {
+			text: await res.text(),
+			headers: res.headers,
+		};
 	}).catch(error => {
 		console.log(chalk.red(error));
 		return null;
 	});
 
+
 	if (!response) {
 		return {
 			executionTime: ((performance.now() - startTime) / 1000).toFixed(2),
 			list: [],
+			headers: response.headers,
 		};
 	}
 
-	const { document } = new JSDOM(response).window;
+	const { document } = new JSDOM(response.text).window;
 	global.currentDocument = document.querySelector('.board-list.noti-fixed');
 	const list = [...document.querySelectorAll('.board-list.noti-fixed li')]
 		.map(news => {
@@ -42,6 +52,7 @@ const getNews = async () => {
 	return {
 		executionTime: ((performance.now() - startTime) / 1000).toFixed(2),
 		list,
+		headers: response.headers,
 	};
 };
 

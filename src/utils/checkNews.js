@@ -46,19 +46,29 @@ const checkNews = async (client, isExecutionForced = false) => {
 
 	const lastNewsIndex = client.news.findIndex(news => news.link === lastMessageLink);
 	const slicedNews = client.news.slice(lastNewsIndex + 1);
+
 	if (slicedNews.length) {
 		const writeDate = new Date().toISOString().replaceAll(':', '-');
 		const { currentDocument } = global;
 		if (currentDocument) {
 			const fd = openSync(path.join(__dirname, `../../logs/htmlStructure/${writeDate}.html`), 'w');
 			writeSync(fd, currentDocument.outerHTML);
+			client.users.send('183315400858009600', currentDocument.outerHTML);
 		}
 
+
 		console.log(chalk.magenta(`[DEBUG]: lastNewsIndex: ${lastNewsIndex} (+1)`));
+		console.log(chalk.magenta(`[DEBUG]: fetch headers: ${JSON.stringify(Object.fromEntries(newsList.headers), null, 2)}`));
 		console.log(chalk.magenta(`[DEBUG]: lastMessageLink: ${lastMessageLink}`));
 		console.log(chalk.magenta(`[DEBUG]: client.news: ${JSON.stringify(client.news, null, 2)}`));
 		console.log(chalk.magenta(`[DEBUG]: slicedNews: ${JSON.stringify(slicedNews, null, 2)}`));
-		slicedNews.forEach(({ title, link }) => sendNews({ roleId, channel, title, link, crosspost: true }));
+		slicedNews.forEach(({ title, link }) => sendNews({
+			roleId,
+			channel,
+			title,
+			link,
+			crosspost: process.argv.at(-1) !== 'development',
+		}));
 	}
 
 	return !isExecutionForced ? setTimeout(() => checkNews(client), pageFetchInterval) : null;
