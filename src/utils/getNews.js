@@ -31,7 +31,7 @@ const getNews = async () => {
 		return {
 			executionTime: ((performance.now() - startTime) / 1000).toFixed(2),
 			list: [],
-			headers: response.headers,
+			headers: {},
 		};
 	}
 
