@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "type": "commonjs",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "scripts": {
     "start:dev": "pm2 start ./src/index.js --name UndecemberNews --max-memory-restart 250M --log ./logs/pm2.log --time --watch src",
