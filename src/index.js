@@ -25,7 +25,7 @@ client.on(Events.Error, error => {
 client.once('ready', (bot) => {
 	console.log(chalk.green(`${bot.user.tag} is ready to work!`));
 
-	if (config.enableInterval) checkNews(bot);
+	if (config.enableInterval) void checkNews(bot);
 });
 
 
@@ -44,4 +44,4 @@ client.on('interactionCreate', async (interaction) => {
 	}
 });
 
-client.login(process.env.TOKEN);
+void client.login(process.env.TOKEN);
