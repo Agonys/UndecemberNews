@@ -53,11 +53,9 @@ const checkNews = async (client, isExecutionForced = false) => {
 		if (currentDocument) {
 			const fd = openSync(path.join(__dirname, `../../logs/htmlStructure/${writeDate}.html`), 'w');
 			writeSync(fd, currentDocument.outerHTML);
-			client.users.send('183315400858009600', currentDocument.outerHTML);
 		}
 
 
-		console.log(chalk.magenta(`[DEBUG]: lastNewsIndex: ${lastNewsIndex} (+1)`));
 		console.log(chalk.magenta(`[DEBUG]: fetch headers: ${JSON.stringify(Object.fromEntries(newsList.headers), null, 2)}`));
 		console.log(chalk.magenta(`[DEBUG]: lastMessageLink: ${lastMessageLink}`));
 		console.log(chalk.magenta(`[DEBUG]: client.news: ${JSON.stringify(client.news, null, 2)}`));

@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, Events } = require('discord.js');
 const chalk = require('chalk');
 
 const checkNews = require('./utils/checkNews');
@@ -16,6 +16,11 @@ client.commands = new Collection();
 
 const commandsList = getCommandsList();
 commandsList.forEach(command => client.commands.set(command.data.name, command));
+
+
+client.on(Events.Error, error => {
+	console.error('A websocket connection encountered an error: ', error);
+});
 
 client.once('ready', (bot) => {
 	console.log(chalk.green(`${bot.user.tag} is ready to work!`));
